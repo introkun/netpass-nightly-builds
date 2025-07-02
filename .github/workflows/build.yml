@@ -36,9 +36,9 @@ jobs:
         with:
           name: netpass-${{ env.GIT_HASH }}
           path: |
-            netpass/output/*.3dsx
-            netpass/output/*.cia
-            netpass/output/*.elf
+            output/*.3dsx
+            output/*.cia
+            output/*.elf
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -46,8 +46,8 @@ jobs:
           tag_name: nightly-${{ env.GIT_HASH }}
           name: Nightly Build ${{ env.GIT_HASH }}
           files: |
-            netpass/output/*.3dsx
-            netpass/output/*.cia
-            netpass/output/*.elf
+            output/*.3dsx
+            output/*.cia
+            output/*.elf
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
