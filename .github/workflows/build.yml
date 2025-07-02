@@ -1,0 +1,53 @@
+name: Nightly & Manual NetPass Build
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # every day at 3:00 AM UTC
+  workflow_dispatch:      # allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    name: Build NetPass
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo (for logs)
+        uses: actions/checkout@v4
+
+      - name: Clone GitLab netpass main branch with submodules
+        run: |
+          git clone --depth 1 --recurse-submodules https://gitlab.com/3ds-netpass/netpass.git
+          cd netpass
+          echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      
+      - name: Create output directory
+        run: mkdir -p output
+
+      - name: Build using Docker
+        run: |
+          docker run --rm \
+            -u $(id -u):$(id -g) \
+            -v ${{ github.workspace }}/netpass:/build/source \
+            -v ${{ github.workspace }}/output:/output \
+            ghcr.io/introkun/netpass-builder:latest DEBUG=0
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: netpass-${{ env.GIT_HASH }}
+          path: |
+            netpass/output/*.3dsx
+            netpass/output/*.cia
+            netpass/output/*.elf
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly-${{ env.GIT_HASH }}
+          name: Nightly Build ${{ env.GIT_HASH }}
+          files: |
+            netpass/output/*.3dsx
+            netpass/output/*.cia
+            netpass/output/*.elf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
