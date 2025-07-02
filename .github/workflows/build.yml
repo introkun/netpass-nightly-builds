@@ -46,15 +46,31 @@ jobs:
         run: |
           URL="https://github.com/${{ github.repository }}/releases/download/nightly-${{ env.GIT_HASH }}/netpass.cia"
           qrencode -o netpass.cia-qr.png "$URL"
+      
+      - name: Commit QR code to repo
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git checkout main
+          git pull
+          mkdir -p qr
+          cp netpass.cia-qr.png qr/${{ env.GIT_HASH }}.png
+          git add qr/${{ env.GIT_HASH }}.png
+          git commit -m "Add QR for nightly-${{ env.GIT_HASH }}"
+          git push
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: nightly-${{ env.GIT_HASH }}
           name: Nightly Build ${{ env.GIT_HASH }}
+          body: |
+            📱 **Scan to install netpass.cia on 3DS**
+
+            ![QR](https://github.com/${{ github.repository }}/raw/main/qr/${{ env.GIT_HASH }}.png)
+
           files: |
             output/*.3dsx
             output/*.cia
-            netpass.cia-qr.png
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
