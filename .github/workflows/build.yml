@@ -39,6 +39,14 @@ jobs:
             output/*.3dsx
             output/*.cia
 
+      - name: Install qrencode
+        run: sudo apt-get install -y qrencode
+      
+      - name: Generate QR code for .cia download
+        run: |
+          URL="https://github.com/${{ github.repository }}/releases/download/nightly-${{ env.GIT_HASH }}/netpass.cia"
+          qrencode -o netpass.cia-qr.png "$URL"
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
@@ -47,5 +55,6 @@ jobs:
           files: |
             output/*.3dsx
             output/*.cia
+            netpass.cia-qr.png
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
