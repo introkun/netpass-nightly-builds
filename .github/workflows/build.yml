@@ -5,8 +5,12 @@ on:
     - cron: '0 3 * * *'  # every day at 3:00 AM UTC
   workflow_dispatch:
     inputs:
+      gitlab_repo:
+        description: 'GitLab repository (e.g., yourname/netpass)'
+        required: false
+        default: '3ds-netpass/netpass'
       gitlab_branch:
-        description: 'GitLab branch to build'
+        description: 'Branch in GitLab repository'
         required: false
         default: 'main'
 
@@ -19,17 +23,16 @@ jobs:
       - name: Checkout this repo (for logs)
         uses: actions/checkout@v4
       
-      - name: Set GitLab branch
-        id: branch
-        run: |
-          echo "branch=${{ github.event.inputs.gitlab_branch || 'main' }}" >> "$GITHUB_OUTPUT"
 
       - name: Clone GitLab branch with submodules
         run: |
-          git clone --recurse-submodules --branch "${{ steps.branch.outputs.branch }}" https://gitlab.com/3ds-netpass/netpass.git
+          REPO="${{ github.event.inputs.gitlab_repo || '3ds-netpass/netpass' }}"
+          BRANCH="${{ github.event.inputs.gitlab_branch || 'main' }}"
+          echo "Cloning from https://gitlab.com/$REPO.git (branch: $BRANCH)"
+          git clone --recurse-submodules --branch "$BRANCH" "https://gitlab.com/$REPO.git" netpass
           cd netpass
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "GIT_BRANCH=${{ steps.branch.outputs.branch }}" >> $GITHUB_ENV
+          echo "GIT_BRANCH=$BRANCH" >> $GITHUB_ENV
       
       - name: Create output directory
         run: mkdir -p output
