@@ -53,6 +53,15 @@ This project builds unofficial nightly versions of [**NetPass**](https://gitlab.
 
 ---
 
+## 🙏 Credits
+
+- 📦 **Docker-based build system**:  
+  [netpass-docker-builder](https://github.com/DanteyPL/netpass-docker-builder)  
+  Created by [@DanteyPL](https://github.com/DanteyPL)  
+  Used to automate building of this project inside GitHub Actions.
+
+---
+
 ## 📜 License
 
 This repository only provides automation and **does not modify** the source.  
