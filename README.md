@@ -49,7 +49,7 @@ The workflow:
 This project builds unofficial nightly versions of [**NetPass**](https://gitlab.com/3ds-netpass/netpass), a homebrew 3DS application.
 
 - 🔗 **Official Source Code**: [gitlab.com/3ds-netpass/netpass](https://gitlab.com/3ds-netpass/netpass)
-- 🛠 **Official Release (Universal-DB)**: [Universal-DB NetPass Page](https://universal-team.net/app/netpass)
+- 🛠 **Official Release (Universal-DB)**: [Universal-DB NetPass Page](https://db.universal-team.net/3ds/netpass)
 
 ---
 
