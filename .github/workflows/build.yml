@@ -3,7 +3,12 @@ name: Nightly & Manual NetPass Build
 on:
   schedule:
     - cron: '0 3 * * *'  # every day at 3:00 AM UTC
-  workflow_dispatch:      # allows manual trigger from GitHub UI
+  workflow_dispatch:
+    inputs:
+      gitlab_branch:
+        description: 'GitLab branch to build'
+        required: false
+        default: 'main'
 
 jobs:
   build:
@@ -13,12 +18,18 @@ jobs:
     steps:
       - name: Checkout this repo (for logs)
         uses: actions/checkout@v4
-
-      - name: Clone GitLab netpass main branch with submodules
+      
+      - name: Set GitLab branch
+        id: branch
         run: |
-          git clone --depth 1 --recurse-submodules https://gitlab.com/3ds-netpass/netpass.git
+          echo "branch=${{ github.event.inputs.gitlab_branch || 'main' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Clone GitLab branch with submodules
+        run: |
+          git clone --recurse-submodules --branch "${{ steps.branch.outputs.branch }}" https://gitlab.com/3ds-netpass/netpass.git
           cd netpass
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "GIT_BRANCH=${{ steps.branch.outputs.branch }}" >> $GITHUB_ENV
       
       - name: Create output directory
         run: mkdir -p output
@@ -43,11 +54,13 @@ jobs:
         run: sudo apt-get install -y qrencode
       
       - name: Generate QR code for .cia download
+        if: env.GIT_BRANCH == 'main'
         run: |
           URL="https://github.com/${{ github.repository }}/releases/download/nightly-${{ env.GIT_HASH }}/netpass.cia"
           qrencode -o netpass.cia-qr.png "$URL"
       
       - name: Commit QR code to repo
+        if: env.GIT_BRANCH == 'main'
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -68,6 +81,7 @@ jobs:
           fi
 
       - name: Create GitHub release
+        if: env.GIT_BRANCH == 'main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: nightly-${{ env.GIT_HASH }}
