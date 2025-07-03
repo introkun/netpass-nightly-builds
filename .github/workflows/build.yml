@@ -82,6 +82,26 @@ jobs:
             git commit -m "Add QR for nightly-${{ env.GIT_HASH }}"
             git push
           fi
+      
+      - name: Get latest Git tag from repo
+        id: get_latest_tag
+        run: |
+          cd netpass
+          LATEST_TAG=$(git describe --tags --abbrev=0 || echo "none")
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+      
+      - name: Generate changelog from latest Git tag
+        id: changelog
+        run: |
+          cd netpass
+          if [ "${{ env.LATEST_TAG }}" = "none" ]; then
+            echo "CHANGELOG=Initial build (no tag found)" >> $GITHUB_ENV
+          else
+            CHANGELOG=$(git log --pretty=format:'- %h: %s' ${{ env.LATEST_TAG }}..HEAD)
+            echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+            echo "$CHANGELOG" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
 
       - name: Create GitHub release
         if: env.GIT_BRANCH == 'main'
@@ -93,6 +113,10 @@ jobs:
             📱 **Scan to install netpass.cia on 3DS**
 
             ![QR](https://github.com/${{ github.repository }}/raw/main/qr/${{ env.GIT_HASH }}.png)
+
+            Changes since last official release ${{ env.LATEST_TAG }}:
+
+            ${{ env.CHANGELOG }}
 
           files: |
             output/*.3dsx
