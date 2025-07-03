@@ -55,9 +55,17 @@ jobs:
           git pull
           mkdir -p qr
           cp netpass.cia-qr.png qr/${{ env.GIT_HASH }}.png
-          git add qr/${{ env.GIT_HASH }}.png
-          git commit -m "Add QR for nightly-${{ env.GIT_HASH }}"
-          git push
+          cp netpass.cia-qr.png qr/latest.png
+
+          git add qr/${{ env.GIT_HASH }}.png qr/latest.png
+          
+          # Only commit if something changed
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add QR for nightly-${{ env.GIT_HASH }}"
+            git push
+          fi
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2

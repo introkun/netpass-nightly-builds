@@ -17,6 +17,8 @@ _Last build: [see logs](https://github.com/introkun/netpass-nightly-builds/actio
 
 ## 📦 Latest Build
 
+![Install with FBI](https://github.com/introkun/netpass-nightly-builds/raw/main/qr/latest.png)
+
 You can find the latest builds under:
 
 🔗 [**Latest Release →**](https://github.com/introkun/netpass-nightly-builds/releases/latest)
