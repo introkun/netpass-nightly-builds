@@ -17,6 +17,7 @@ _Last build: [see logs](https://github.com/introkun/netpass-nightly-builds/actio
 
 ## 📦 Latest Build
 
+📱 Scan to install the latest nightly netpass.cia on 3DS:
 ![Install with FBI](https://github.com/introkun/netpass-nightly-builds/raw/main/qr/latest.png)
 
 You can find the latest builds under:
