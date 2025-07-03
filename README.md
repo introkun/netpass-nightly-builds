@@ -10,6 +10,7 @@ Built automatically every night at 3:00 AM UTC using [GitHub Actions](.github/
 ## ✅ Build Status
 
 [![Nightly Build Status](https://github.com/introkun/netpass-nightly-builds/actions/workflows/build.yml/badge.svg)](https://github.com/introkun/netpass-nightly-builds/actions)
+![Total Downloads](https://img.shields.io/github/downloads/introkun/netpass-nightly-builds/total)
 
 _Last build: [see logs](https://github.com/introkun/netpass-nightly-builds/actions/workflows/build.yml)_
 
