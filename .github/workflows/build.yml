@@ -43,7 +43,7 @@ jobs:
             -u $(id -u):$(id -g) \
             -v ${{ github.workspace }}/netpass:/build/source \
             -v ${{ github.workspace }}/output:/output \
-            ghcr.io/introkun/netpass-builder:latest default
+            ghcr.io/introkun/netpass-builder:latest cia
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
